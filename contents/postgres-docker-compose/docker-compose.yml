@@ -1,0 +1,19 @@
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:14.17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER-d2s}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD-admin_d2s_2025}
+      POSTGRES_DB: ${POSTGRES_DB-d2s_db}
+    restart: unless-stopped
+    volumes:
+      - ./data/postgres:/data/postgres
+    ports:
+      - "${POSTGRES_PORT-5432}:${POSTGRES_PORT-5432}"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER-d2s}", "-d", "${POSTGRES_DB-d2s_db}", "-p", "${POSTGRES_PORT-5432}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
